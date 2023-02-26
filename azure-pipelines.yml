@@ -73,12 +73,12 @@ steps:
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish API2'
-  condition: eq(variables['api2'], 'True')
+ 
   inputs:
     command: 'publish'
     publishWebProjects: true
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    workingDirectory: '$(Build.ArtifactStagingDirectory)/api2/'
+
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish API3'
