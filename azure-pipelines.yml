@@ -1,6 +1,10 @@
 trigger:
 - azure-pipelines
 
+paths:
+    include:
+    - '*.sln'
+
 pool:
   vmImage: 'windows-latest'
 
@@ -8,7 +12,6 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  buildProjects: ''
 
 steps:
 - task: UseDotNet@2
@@ -19,14 +22,6 @@ steps:
 - task: NuGetToolInstaller@1
   displayName: 'Use NuGet'
 
-- task: CmdLine@2
-  displayName: 'Identify Changed Solutions'
-  inputs:
-    script: |
-      changed_projects=$(git diff-tree --name-only --no-commit-id HEAD HEAD~1 | grep .csproj | awk -F/ '{print $1}')
-      echo "##vso[task.setvariable variable=buildProjects]$changed_projects"
-      name: identify_changed_projects
-
 - task: NuGetCommand@2
   displayName: 'NuGet Restore'
   inputs:
@@ -36,7 +31,7 @@ steps:
   displayName: 'Build API(s)'
   inputs:
     command: 'build'
-    projects: '$(buildProjects)'
+    projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
