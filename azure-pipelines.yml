@@ -69,7 +69,7 @@ steps:
     command: 'publish'
     publishWebProjects: true
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    workingDirectory: '$(Build.ArtifactStagingDirectory)/api1'
+    workingDirectory: '$(Build.ArtifactStagingDirectory)/api1/'
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish API2'
@@ -78,7 +78,7 @@ steps:
     command: 'publish'
     publishWebProjects: true
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    workingDirectory: '$(Build.ArtifactStagingDirectory)/api2'
+    workingDirectory: '$(Build.ArtifactStagingDirectory)/api2/'
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish API3'
@@ -87,7 +87,7 @@ steps:
     command: 'publish'
     publishWebProjects: true
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    workingDirectory: '$(Build.ArtifactStagingDirectory)/api3'
+    workingDirectory: '$(Build.ArtifactStagingDirectory)/api3/'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Build Artifacts: drop'
