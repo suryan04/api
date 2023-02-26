@@ -1,7 +1,9 @@
 trigger:
-- azure-pipelines
-
-paths:
+    batch: true
+    branches:
+        include:
+        - azure-pipelines
+    paths:
     include:
     - '*.sln'
 
