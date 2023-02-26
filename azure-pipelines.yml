@@ -4,8 +4,8 @@ trigger:
         include:
         - azure-pipelines
     paths:
-    include:
-    - '*.sln'
+        include:
+        - '*.sln'
 
 pool:
   vmImage: 'windows-latest'
