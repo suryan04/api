@@ -3,9 +3,7 @@ trigger:
     branches:
         include:
         - azure-pipelines
-    paths:
-        include:
-        - '*.sln'
+        - dev*
 
 pool:
   vmImage: 'windows-latest'
@@ -14,8 +12,36 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  api1: false
+  api2: false
+  api3: false
 
 steps:
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $files=$(git diff HEAD HEAD~ --name-only)
+      $temp=$files -split ' '
+      $count=$temp.Length
+      For ($i=0; $i -lt $temp.Length; $i++)
+      {
+        $name=$temp[$i]
+        echo "this is $name file"
+        if ($name -like "api1/*")
+          {
+            Write-Host "##vso[task.setvariable variable=api1]True"
+          }
+        if ($name -like "api2/*")
+          {
+            Write-Host "##vso[task.setvariable variable=api2]True"
+          }
+        if ($name -like "api3/*")
+          {
+            Write-Host "##vso[task.setvariable variable=api3]True"
+          }
+      }
+
 - task: UseDotNet@2
   displayName: 'Use .NET Core sdk 6.x'
   inputs:
@@ -37,11 +63,31 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Publish API(s)'
+  displayName: 'Publish API1'
+  condition: eq(variables['api1'], 'True')
   inputs:
     command: 'publish'
     publishWebProjects: true
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    workingDirectory: '$(Build.ArtifactStagingDirectory)/api1'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish API2'
+  condition: eq(variables['api2'], 'True')
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    workingDirectory: '$(Build.ArtifactStagingDirectory)/api2'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish API3'
+  condition: eq(variables['api3'], 'True')
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    workingDirectory: '$(Build.ArtifactStagingDirectory)/api3'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Build Artifacts: drop'
